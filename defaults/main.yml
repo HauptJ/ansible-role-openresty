@@ -28,7 +28,7 @@ with_file_aio: true
 
 ##### Compile from source or install from repo #####
 # set to false to install from repo
-resty_install_from_source: true
+resty_install_from_source: false
 
 ##### Compile Threads #####
 resty_compile_threads: 2
