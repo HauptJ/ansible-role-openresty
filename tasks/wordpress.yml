@@ -41,11 +41,12 @@
     src: index.html
     dest: "{{ resty_default_web_dir }}/"
 
+# TODO: check for presence of php info page during CI testing
 - name: copy info.php as STUB
   template:
     src: info.php
     dest: "{{ resty_default_web_dir }}/"
-  when: mariadb_ci_test == true
+  when: resty_ci_test == true
 
 - name: Copy nginx cloudflare configuration
   template:
