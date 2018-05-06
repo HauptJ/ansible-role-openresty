@@ -1,9 +1,9 @@
-# @Author: Haupt Joshua <HauptJ>
-# @Date:   26-Mar-2018
+# @Author: Haupt Joshua
+# @Date:   15-Apr-2018
 # @Email:  josh@hauptj.com
 # @Filename: main.yml
-# @Last modified by:   HauptJ
-# @Last modified time: 02-Apr-2018
+# @Last modified by:   Haupt Joshua
+# @Last modified time: 01-May-2018
 
 ---
   # Driver for OpenResty Installation
@@ -19,18 +19,32 @@
 
   ##### Post Installation Tasks #####
 
-- name: copy systemd service file
+- name: copy systemd service file #for CentOS
   template:
     src: openresty.service
     dest: /etc/systemd/system/openresty.service
+  #when: ansible_distribution == "CentOS"
 
+#- name: copy systemd service file for Ubuntu
+#  template:
+#    src: openresty.j2
+#    dest: /etc/systemd/system/openresty.service
+#  when: ansible_distribution == "Ubuntu"
+
+  # Plain HTTP server
 - name: configure default site for testing
   include_tasks: default_site.yml
   when: resty_default_server == true
 
+  # CV Server
+- name: configure CV site
+  include_tasks: cv.yml
+  when: resty_default_server == false and resty_cv_server == true
+
+  # HTTP server configured for WordPress
 - name: configure wordpress site
   include_tasks: wordpress.yml
-  when: resty_default_server == false and resty_install_wp == true
+  when: resty_default_server == false and resty_cv_server == false and resty_install_wp == true
 
 - name: insert firewalld rule for nginx port {{ nginx_port }}
   firewalld:
