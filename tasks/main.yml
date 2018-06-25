@@ -1,50 +1,47 @@
-# @Author: Haupt Joshua
-# @Date:   15-Apr-2018
-# @Email:  josh@hauptj.com
-# @Filename: main.yml
-# @Last modified by:   Haupt Joshua
-# @Last modified time: 01-May-2018
-
 ---
   # Driver for OpenResty Installation
   # Ref: https://www.digitalocean.com/community/tutorials/how-to-use-the-openresty-web-framework-for-nginx-on-ubuntu-16-04
 
 - name: Compile from source
   include_tasks: source.yml
-  when: resty_install_from_source == true
+  #when: resty_install_from_source == true
+  tags:
+    - source
 
 - name: Install form repo
   include_tasks: repo.yml
-  when: resty_install_from_source == false
+  #when: resty_install_from_source == false
+  tags:
+    - repo
 
   ##### Post Installation Tasks #####
 
-- name: copy systemd service file #for CentOS
+- name: copy systemd service file
   template:
     src: openresty.service
     dest: /etc/systemd/system/openresty.service
-  #when: ansible_distribution == "CentOS"
-
-#- name: copy systemd service file for Ubuntu
-#  template:
-#    src: openresty.j2
-#    dest: /etc/systemd/system/openresty.service
-#  when: ansible_distribution == "Ubuntu"
 
   # Plain HTTP server
 - name: configure default site for testing
   include_tasks: default_site.yml
-  when: resty_default_server == true
-
-  # CV Server
-- name: configure CV site
-  include_tasks: cv.yml
-  when: resty_default_server == false and resty_cv_server == true
+  #when: resty_default_server == true and resty_install_wp == false
+  tags:
+    - test
 
   # HTTP server configured for WordPress
 - name: configure wordpress site
   include_tasks: wordpress.yml
-  when: resty_default_server == false and resty_cv_server == false and resty_install_wp == true
+  #when: resty_default_server == false and resty_install_wp == true
+  tags:
+    - wordpress
+
+- name: Enable OpenResty
+  service:
+    name: openresty
+    state: started
+    enabled: yes
+  ignore_errors: yes
+  notify: restart openresty
 
 - name: insert firewalld rule for nginx port {{ nginx_port }}
   firewalld:
@@ -53,4 +50,6 @@
     state: enabled
     immediate: yes
   ignore_errors: yes
-  when: firewalld_installed == true
+  #when: firewalld_installed == true
+  tags:
+    - firewalld
