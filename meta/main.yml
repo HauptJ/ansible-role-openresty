@@ -1,10 +1,3 @@
-# @Author: Haupt Joshua
-# @Date:   26-Mar-2018
-# @Email:  josh@hauptj.com
-# @Filename: main.yml
-# @Last modified by:   Haupt Joshua
-# @Last modified time: 01-May-2018
-
 ---
 galaxy_info:
   author: Joshua Haupt
@@ -21,8 +14,3 @@ galaxy_info:
     - redis
     - openresty
     - web
-  dependencies:
-    - role: geerlingguy.repo-epel
-      when: resty_ci_test == true and ansible_distribution == "CentOS"
-    - role: geerlingguy.repo-remi
-      when: resty_ci_test == true and ansible_distribution == "CentOS"
