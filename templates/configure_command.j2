@@ -1,5 +1,4 @@
 #!/bin/bash
-mkdir /var/lib/nginx
 ./configure -j{{ resty_compile_threads }} \
 {% if with_luajit %} --with-luajit {% endif %}
 {% if with_dav %} --with-http_dav_module {% endif %}
