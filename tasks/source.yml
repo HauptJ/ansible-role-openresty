@@ -76,6 +76,12 @@
 
       when: resty_tar.stat.exists == False
 
+
+    - name: Create nginx temp directory
+      file:
+        path: /var/lib/nginx
+        state: directory
+
     - name: Build configure command
       template: src=configure_command.j2 dest=/tmp/openresty-{{ openresty_version }}/ansible_build.sh mode=0777
 
